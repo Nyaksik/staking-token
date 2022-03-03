@@ -1,7 +1,7 @@
 import { ethers } from "hardhat";
 
 async function main() {
-    const RewardToken = await ethers.getContractFactory("StakingContact");
+    const RewardToken = await ethers.getContractFactory("StakingContract");
     const rewardToken = await RewardToken.deploy(
         process.env.LP_TOKEN_ADDRESS as string,
         process.env.REWARD_TOKEN_ADDRESS as string,
