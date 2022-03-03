@@ -2,11 +2,15 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract StakingContact is AccessControl {
+interface IERC20mint {
+    function mint(address account, uint amount) external;
+}
+
+contract StakingContract is AccessControl {
     IERC20 private _stakingToken;
-    IERC20 private _rewardsToken;
+    IERC20mint private _rewardsToken;
 
     bytes32 private constant OWNER_ROLE = keccak256("OWNER_ROLE");
     
@@ -18,6 +22,7 @@ contract StakingContact is AccessControl {
         uint256 amount;
         uint256 stakeTime;
     }
+    
     struct Staker {
         uint256 totalAmount;
         StakerOperations[] operations;
@@ -33,13 +38,13 @@ contract StakingContact is AccessControl {
     ) {
         _setupRole(OWNER_ROLE, msg.sender);
         _stakingToken = IERC20(_stakingAddress);
-        _rewardsToken = IERC20(_rewardAddress);
+        _rewardsToken = IERC20mint(_rewardAddress);
         endTime = _endTime;
         stakingPercent = _stakingPercent;
     }
 
-    function getBalance() external view returns(uint) {
-        return address(this).balance;
+    function getStaker(address _staker) external view returns(Staker memory) {
+        return stakers[_staker];
     }
 
     function changeEndTime(uint _time) external onlyRole(OWNER_ROLE) {
@@ -50,9 +55,8 @@ contract StakingContact is AccessControl {
         stakingPercent = _percent;
     }
 
-    function provideRewards(uint _amount) external onlyRole(OWNER_ROLE) {
-        require(_amount > 0, "The amount is less than zero");
-        _rewardsToken.transferFrom(msg.sender, address(this), _amount);
+    function changeRewardToken(address token) external onlyRole(OWNER_ROLE) {
+        _rewardsToken = IERC20mint(token);
     }
 
     function stake(uint _amount) external {
@@ -68,6 +72,7 @@ contract StakingContact is AccessControl {
 
     function unstake() external {
         Staker storage staker = stakers[msg.sender];
+        require(staker.totalAmount > 0, "No stakes");
         _stakingToken.transfer(msg.sender, staker.totalAmount);
         _claim();
         totalStaked -= staker.totalAmount;
@@ -93,7 +98,8 @@ contract StakingContact is AccessControl {
                 operations[i].stakeTime = block.timestamp;
             }
         }
-        require(claimableAmount > 0, "Nothing to claim");
-        _rewardsToken.transfer(msg.sender, claimableAmount);
+        if(claimableAmount > 0) {
+            _rewardsToken.mint(msg.sender, claimableAmount);    
+        }
     }
 }
