@@ -17,10 +17,9 @@ export default (): void => {
             await this.instance.stake(2e9);
             await ethers.provider.send("evm_increaseTime", [this.endTime]);
             await this.instance.claim();
-    
             const balance = await this.rewardInstance.balanceOf(this.owner.address);
 
-            expect(balance).to.eq(12e8);
+            expect(balance).to.eq(123e7);
         });
     it("CLAIM:Expected that after stake, unstake and claim, the balance of reward tokens will be 24e8",
         async function(): Promise<void> {
@@ -46,7 +45,7 @@ export default (): void => {
             const rewardBalance = await this.rewardInstance.balanceOf(this.owner.address);
             const stakingBalance = await this.stakeInstance.balanceOf(this.owner.address);
 
-            expect(rewardBalance).to.eq(24e8);
+            expect(rewardBalance).to.eq(246e7);
             expect(stakingBalance).to.eq(4e9);
         });
 }

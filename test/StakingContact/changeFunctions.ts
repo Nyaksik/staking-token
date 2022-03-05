@@ -17,12 +17,12 @@ export default (): void => {
             expect(time).to.eq(this.endTime * 2);
         }
     );
-    it("END TIME:Only the owner can change",
+    it("END TIME:Ownable: caller is not the owner",
         async function (): Promise<void> {
             await expect(
                 this.instance.connect(this.addr1).changeEndTime(2000)
             ).to.be.revertedWith(
-                "AccessControl: account 0x70997970c51812dc3a010c7d01b50e0d17dc79c8 is missing role 0xb19546dff01e856fb3f010c267a7b1c60363cf8a4664e21cc89c26224620214e"
+                "Ownable: caller is not the owner"
             )
         }
     );
@@ -42,12 +42,12 @@ export default (): void => {
             expect(percent).to.eq(this.stakingPercent * 2);
         }
     );
-    it("STAKING PERCENT:Only the owner can change",
+    it("STAKING PERCENT:Ownable: caller is not the owner",
         async function (): Promise<void> {
             await expect(
                 this.instance.connect(this.addr1).changeStakingPercent(2000)
             ).to.be.revertedWith(
-                "AccessControl: account 0x70997970c51812dc3a010c7d01b50e0d17dc79c8 is missing role 0xb19546dff01e856fb3f010c267a7b1c60363cf8a4664e21cc89c26224620214e"
+                "Ownable: caller is not the owner"
             )
         }
     );

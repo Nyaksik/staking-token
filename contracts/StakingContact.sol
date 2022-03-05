@@ -1,19 +1,17 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface IERC20mint {
     function mint(address account, uint amount) external;
 }
 
-contract StakingContract is AccessControl {
+contract StakingContract is Ownable {
     IERC20 private _stakingToken;
     IERC20mint private _rewardsToken;
 
-    bytes32 private constant OWNER_ROLE = keccak256("OWNER_ROLE");
-    
     uint public endTime;
     uint public stakingPercent;
     uint public totalStaked;
@@ -36,7 +34,6 @@ contract StakingContract is AccessControl {
         uint _endTime,
         uint _stakingPercent
     ) {
-        _setupRole(OWNER_ROLE, msg.sender);
         _stakingToken = IERC20(_stakingAddress);
         _rewardsToken = IERC20mint(_rewardAddress);
         endTime = _endTime;
@@ -47,15 +44,15 @@ contract StakingContract is AccessControl {
         return stakers[_staker];
     }
 
-    function changeEndTime(uint _time) external onlyRole(OWNER_ROLE) {
+    function changeEndTime(uint _time) external onlyOwner {
         endTime = _time;
     }
 
-    function changeStakingPercent(uint _percent) external onlyRole(OWNER_ROLE) {
+    function changeStakingPercent(uint _percent) external onlyOwner {
         stakingPercent = _percent;
     }
 
-    function changeRewardToken(address token) external onlyRole(OWNER_ROLE) {
+    function changeRewardToken(address token) external onlyOwner {
         _rewardsToken = IERC20mint(token);
     }
 
@@ -93,7 +90,7 @@ contract StakingContract is AccessControl {
             uint stakingPeriod = block.timestamp - operations[i].stakeTime;
             if(stakingPeriod >= endTime) {
                 uint cyclesCount = stakingPeriod / endTime;
-                uint tokensAmount = operations[i].amount * stakingPercent / 100;
+                uint tokensAmount = operations[i].amount * stakingPercent / 100000;
                 claimableAmount += cyclesCount * tokensAmount;
                 operations[i].stakeTime = block.timestamp;
             }

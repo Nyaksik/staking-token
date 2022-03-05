@@ -87,3 +87,15 @@ task("claim", "Claim")
 
         console.log(`${signer} made a claim`);
     })
+
+task("a", "Claim")
+.setAction(async (_, { ethers }) => {
+    const [signer] = await ethers.getSigners();
+    const instance = await ethers.getContractAt(
+        "NyanNyanCoin",
+        "0xB04418602c83C3AC8187a2f7b3c778B9CF9ed568",
+        signer
+    );
+
+    console.log(`${instance} made a claim`);
+})
