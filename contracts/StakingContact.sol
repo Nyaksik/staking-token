@@ -13,7 +13,7 @@ contract StakingContract is Ownable {
     IERC20mint private _rewardsToken;
 
     uint public endTime;
-    uint public stakingPercent;
+    uint public stakingPercent; 
     uint public totalStaked;
     
     struct StakerOperations {
