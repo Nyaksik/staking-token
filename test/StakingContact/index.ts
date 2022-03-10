@@ -11,7 +11,7 @@ describe("Staking contract testing", async function () {
         this.zeroAddress = "0x0000000000000000000000000000000000000000";
         [this.owner, this.addr1, this.addr2] = await ethers.getSigners();
         this.endTime = 1000;
-        this.stakingPercent = 20500;
+        this.stakingPercent = 20000;
     });
     beforeEach(async function() {
         const stakeArtifact: Artifact = await artifacts.readArtifact("StakingToken");

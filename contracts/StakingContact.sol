@@ -16,16 +16,11 @@ contract StakingContract is Ownable {
     uint public stakingPercent; 
     uint public totalStaked;
     
-    struct StakerOperations {
+    struct Staker {
         uint256 amount;
         uint256 stakeTime;
     }
     
-    struct Staker {
-        uint256 totalAmount;
-        StakerOperations[] operations;
-    }
-
     mapping(address => Staker) private stakers;
 
     constructor(
@@ -59,44 +54,44 @@ contract StakingContract is Ownable {
     function stake(uint _amount) external {
         require(_amount > 0, "The amount is less than zero");
         Staker storage staker = stakers[msg.sender];
+        if(_countCycles() > 0) {
+            _claim();
+        }
         _stakingToken.transferFrom(msg.sender, address(this), _amount);
         totalStaked += _amount;
-        staker.totalAmount += _amount;
-        staker.operations.push(
-            StakerOperations({ amount: _amount, stakeTime: block.timestamp })
-        );
+        staker.amount += _amount;
+        staker.stakeTime = block.timestamp;
     }
 
     function unstake() external {
         Staker storage staker = stakers[msg.sender];
-        require(staker.totalAmount > 0, "No stakes");
-        _stakingToken.transfer(msg.sender, staker.totalAmount);
-        _claim();
-        totalStaked -= staker.totalAmount;
-        staker.totalAmount = 0;
-        delete staker.operations;
+        require(staker.amount > 0, "No stakes");
+        _stakingToken.transfer(msg.sender, staker.amount);
+        if(_countCycles() > 0) {
+            _claim();
+        }
+        totalStaked -= staker.amount;
+        staker.amount = 0;
     }
 
     function claim() external {
+        require(_countCycles() > 0, "No claim");
         _claim();
     }
 
     // Helper function
 
     function _claim() internal {
-        StakerOperations[] storage operations = stakers[msg.sender].operations;
-        uint claimableAmount;
-        for(uint i = 0; i < operations.length; i++) {
-            uint stakingPeriod = block.timestamp - operations[i].stakeTime;
-            if(stakingPeriod >= endTime) {
-                uint cyclesCount = stakingPeriod / endTime;
-                uint tokensAmount = operations[i].amount * stakingPercent / 100000;
-                claimableAmount += cyclesCount * tokensAmount;
-                operations[i].stakeTime = block.timestamp;
-            }
-        }
-        if(claimableAmount > 0) {
-            _rewardsToken.mint(msg.sender, claimableAmount);    
-        }
+        Staker storage staker = stakers[msg.sender];
+        uint tokensAmount = staker.amount * stakingPercent / 100000;
+        uint claimableAmount = _countCycles() * tokensAmount;
+        staker.stakeTime = block.timestamp;
+        _rewardsToken.mint(msg.sender, claimableAmount);    
+    }
+
+    function _countCycles() internal view returns(uint cyclesCount) {
+        Staker memory staker = stakers[msg.sender];
+        uint stakingPeriod = block.timestamp - staker.stakeTime;
+        cyclesCount = stakingPeriod / endTime;
     }
 }

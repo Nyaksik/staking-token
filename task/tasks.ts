@@ -113,7 +113,7 @@ task("getPair", "Claim")
         const [signer] = await ethers.getSigners();
         const instance = await ethers.getContractAt(
             "IUniswapV2Factory",
-            "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+            FACTORY,
             signer
         );
 

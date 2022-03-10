@@ -35,7 +35,7 @@ export default (): void => {
     );
     it("STAKING PERCENT:Staking percent will change to 40 percent",
         async function (): Promise<void> {
-            await this.instance.changeStakingPercent(40);
+            await this.instance.changeStakingPercent(40000);
 
             const percent = await this.instance.stakingPercent();
 
