@@ -2,8 +2,8 @@
 
 # Link
 
-- __[Link to the stacking contract](https://rinkeby.etherscan.io/address/0x2e3B0E7DCd2E0aeb56B67c6c24173CC0f64E82FF)__ (Rinkeby test network)
-- __[Link to the reward token contract](https://rinkeby.etherscan.io/address/0x3b0475bd7e8511a2eda0318e90a7b9a505506400#writeContract/)__ (Rinkeby test network)
+- __[Link to the stacking contract](https://rinkeby.etherscan.io/address/0xd009C713A1Ab8dB6C46dC8FbdaD167Ab499754B9)__ (Rinkeby test network)
+- __[Link to the reward token contract](https://rinkeby.etherscan.io/address/0xf3FBdE8D6bd8d0bffC78186d1daAebbCf25F46f8)__ (Rinkeby test network)
 - __[Link to the LP token contract](https://rinkeby.etherscan.io/address/0xdc1d1a85f8de7ce48139cd3cbc61dabe2e85c4c3)__ (Rinkeby test network)
 
 # Staking contract

@@ -6,7 +6,7 @@ async function main() {
         process.env.LP_TOKEN_ADDRESS as string,
         process.env.REWARD_TOKEN_ADDRESS as string,
         300,
-        20500
+        20000
     );
 
     await rewardToken.deployed();

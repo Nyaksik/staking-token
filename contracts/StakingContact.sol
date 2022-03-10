@@ -17,8 +17,8 @@ contract StakingContract is Ownable {
     uint public totalStaked;
     
     struct Staker {
-        uint amount;
-        uint stakeTime;
+        uint256 amount;
+        uint256 stakeTime;
     }
     
     mapping(address => Staker) private stakers;
