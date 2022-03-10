@@ -19,7 +19,7 @@ export default (): void => {
             await this.instance.claim();
             const balance = await this.rewardInstance.balanceOf(this.owner.address);
 
-            expect(balance).to.eq(123e7);
+            expect(balance).to.eq(12e8);
         });
     it("CLAIM:Expected that after stake, unstake and claim, the balance of reward tokens will be 24e8",
         async function(): Promise<void> {
@@ -45,7 +45,22 @@ export default (): void => {
             const rewardBalance = await this.rewardInstance.balanceOf(this.owner.address);
             const stakingBalance = await this.stakeInstance.balanceOf(this.owner.address);
 
-            expect(rewardBalance).to.eq(246e7);
+            expect(rewardBalance).to.eq(24e8);
             expect(stakingBalance).to.eq(4e9);
         });
+    it("CLAIM:Stake tx will return if \"No claim\"", async function (): Promise<void> {
+        await this.stakeInstance.mint(
+            this.owner.address,
+            2e9
+        )
+        await this.stakeInstance.approve(
+            this.instance.address,
+            2e9
+        )
+        await this.instance.stake(2e9);
+        
+        await expect(
+            this.instance.claim()
+        ).to.be.revertedWith("No claim");
+    });
 }

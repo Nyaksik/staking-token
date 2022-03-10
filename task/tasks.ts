@@ -92,7 +92,7 @@ task("claim", "Claim")
         console.log(`${signer} made a claim`);
     })
 
-task("createPair", "Claim")
+task("createPair", "Create pair")
     .setAction(async (_, { ethers }) => {
         const [signer] = await ethers.getSigners();
         const instance = await ethers.getContractAt(
@@ -108,12 +108,12 @@ task("createPair", "Claim")
         console.log(pair)
     })
 
-task("getPair", "Claim")
+task("getPair", "Get pair")
     .setAction(async (_, { ethers }) => {
         const [signer] = await ethers.getSigners();
         const instance = await ethers.getContractAt(
             "IUniswapV2Factory",
-            "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+            FACTORY,
             signer
         );
 
@@ -122,7 +122,7 @@ task("getPair", "Claim")
         console.log(pair)
     })
 
-task("addLiquidity", "Claim")
+task("addLiquidity", "Add liquidity")
     .setAction(async (_, { ethers }) => {
         const [signer] = await ethers.getSigners()
         const IRouter = await ethers.getContractAt(

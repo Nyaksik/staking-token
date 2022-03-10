@@ -16,11 +16,10 @@ export default (): void => {
             await this.instance.stake(3e9);
             await this.instance.unstake();
 
-            const { totalAmount, operations } = await this.instance
+            const { amount } = await this.instance
                 .getStaker(this.owner.address);
             
-            expect(totalAmount).to.eq(0);
-            expect(operations.length).to.eq(0);
+            expect(amount).to.eq(0);
         });
     it("UNSTAKE:Balance is expected to be 9e9 after stake and unstake",
         async function(): Promise<void> {
